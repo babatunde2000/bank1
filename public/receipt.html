@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Receipt - Educational Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="receipt-page">
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing transaction...</div>
+    </div>
+
+    <div class="receipt-container">
+        <div class="receipt-header">
+            <span class="done-text">Done</span>
+        </div>
+
+        <div class="success-section">
+            <div class="success-icon">
+                <div class="check-circle"></div>
+            </div>
+
+            <h1 class="success-title">Transfer successful</h1>
+
+            <div class="amount-display">
+                <span id="receiptAmount">₦100.00</span>
+            </div>
+
+            <p class="receipt-message">
+                The recipient account is expected to be credited within 5 minutes, subject to notification by the bank.
+            </p>
+        </div>
+
+        <div class="action-buttons">
+            <div class="action-item">
+                <div class="action-icon">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.50-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92S19.61 16.08 18 16.08z"/>
+                    </svg>
+                </div>
+                <span>Share Receipt</span>
+            </div>
+            
+            <div class="action-item">
+                <div class="action-icon">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+                <span>Add to favourites</span>
+            </div>
+            
+            <div class="action-item" onclick="viewDetails()">
+                <div class="action-icon">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                </div>
+                <span>View Details</span>
+            </div>
+        </div>
+
+        <div class="bonus-section">
+            <h3>Special Bonus For You</h3>
+            
+            <div class="bonus-item">
+                <div class="bonus-icon">💰</div>
+                <div class="bonus-text">
+                    <h4>Save easily</h4>
+                    <p>Earn more interest every day!</p>
+                </div>
+                <button class="bonus-btn">GO</button>
+            </div>
+
+            <div class="bonus-item">
+                <div class="bonus-icon">💳</div>
+                <div class="bonus-text">
+                    <h4>Enjoy online payment</h4>
+                    <p>Using OPay Verve Card now</p>
+                </div>
+                <button class="bonus-btn">GO</button>
+            </div>
+
+            <div class="bonus-item">
+                <div class="bonus-icon">⚙️</div>
+                <div class="bonus-text">
+                    <h4>Bet big, win bigger!</h4>
+                    <p>Get Discounts That Wow! 🤩</p>
+                </div>
+                <button class="bonus-btn">GO</button>
+            </div>
+
+            <div class="bonus-item">
+                <div class="bonus-icon">💡</div>
+                <div class="bonus-text">
+                    <h4>Electricity Payment</h4>
+                    <p>Fast&Easy Electricity Bill Pay</p>
+                </div>
+                <button class="bonus-btn">GO</button>
+            </div>
+        </div>
+
+        <div class="loan-banner">
+            <!-- This will be replaced with your banner image -->
+            <div style="color: white; text-align: center; font-weight: 600;">
+                Loan Banner Image Goes Here
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show loading for 4 seconds
+        setTimeout(() => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }, 4000);
+
+        // Load transaction data and update display
+        fetch('/api/transaction-data')
+            .then(response => response.json())
+            .then(data => {
+                const amount = parseFloat(data.amount).toLocaleString('en-NG', {
+                    style: 'currency',
+                    currency: 'NGN'
+                });
+                document.getElementById('receiptAmount').textContent = amount;
+            })
+            .catch(error => {
+                console.error('Error loading transaction data:', error);
+                window.location.href = '/';
+            });
+
+        function viewDetails() {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.querySelector('.loading-text').textContent = 'Loading details...';
+            
+            setTimeout(() => {
+                window.location.href = '/details';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

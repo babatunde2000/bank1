@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Transaction Details - Educational Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="details-page">
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading transaction details...</div>
+    </div>
+
+    <div class="details-container">
+        <div class="details-header">
+            <button class="back-btn" onclick="goBack()">
+                <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </button>
+            <h1>Transaction Details</h1>
+            <div class="profile-icon">
+                <svg width="16" height="16" fill="#4fd2b2" viewBox="0 0 24 24">
+                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 6.5V7.5C15 8.3 14.3 9 13.5 9H10.5C9.7 9 9 8.3 9 7.5V6.5L3 7V9H21Z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="bank-icon">
+            <div class="bank-icon-circle"></div>
+        </div>
+
+        <div class="transfer-info">
+            <h2>Transfer to <span id="recipientName">BABATUNDE ANTHONY AJIBOLA</span></h2>
+            <div class="amount-large" id="detailsAmount">₦100.00</div>
+            <div class="status-success">Successful</div>
+        </div>
+
+        <div class="progress-steps">
+            <div class="step">
+                <div class="step-icon">✓</div>
+                <div class="step-text">
+                    <div class="step-title">Payment successful</div>
+                    <div class="step-time" id="paymentTime">09-02 15:37:16</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-icon">✓</div>
+                <div class="step-text">
+                    <div class="step-title">Processing by bank</div>
+                    <div class="step-time" id="processingTime">09-02 15:37:16</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-icon">✓</div>
+                <div class="step-text">
+                    <div class="step-title">Received by bank</div>
+                    <div class="step-time" id="receivedTime">09-02 15:37:44</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            The recipient account is expected to be credited within 5 minutes, subject to notification by the bank. If you have any questions, you can also <a href="#" class="contact-link">contact the recipient bank 🙋🏻</a>
+        </div>
+
+        <div class="transaction-summary">
+            <div class="summary-row">
+                <span class="summary-label">Amount</span>
+                <span class="summary-value" id="summaryAmount">₦100.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Fee</span>
+                <span class="summary-value">
+                    <span class="strikethrough">₦10.00</span>₦0.00
+                </span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Amount Paid</span>
+                <span class="summary-value" id="totalAmount">₦100.00</span>
+            </div>
+        </div>
+
+        <div class="transaction-details">
+            <h3>Transaction Details</h3>
+            
+            <div class="detail-row">
+                <span class="detail-label">Recipient Details</span>
+                <span class="detail-value" id="recipientDetails">BABATUNDE ANTHONY AJIBOLA<br>PalmPay | 8088645311</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Transaction No.</span>
+                <span class="detail-value" id="transactionNo">250902020100844684303815📋</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Payment Method</span>
+                <span class="detail-value" id="paymentMethod">Wallet -₦81.00 ><br>OWealth -₦19.00 ></span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Transaction Date</span>
+                <span class="detail-value" id="transactionDate">Sep 2nd, 2025 15:37:16</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Session ID</span>
+                <span class="detail-value" id="sessionId">100004250902143724140249938026📋</span>
+            </div>
+        </div>
+
+        <div class="more-actions">
+            <h4>More Actions</h4>
+            <div class="action-row">
+                <span class="detail-label">Category</span>
+                <span class="detail-value">Transfer ></span>
+            </div>
+        </div>
+
+        <div class="bottom-actions">
+            <button class="report-btn">Report Issue</button>
+            <button class="share-btn">Share Receipt</button>
+        </div>
+    </div>
+
+    <script>
+        // Show loading for 4 seconds
+        setTimeout(() => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }, 4000);
+
+        // Load and display transaction data
+        fetch('/api/transaction-data')
+            .then(response => response.json())
+            .then(data => {
+                updateDetailsDisplay(data);
+            })
+            .catch(error => {
+                console.error('Error loading transaction data:', error);
+                window.location.href = '/';
+            });
+
+        function updateDetailsDisplay(data) {
+            const amount = parseFloat(data.amount).toLocaleString('en-NG', {
+                style: 'currency',
+                currency: 'NGN'
+            });
+
+            // Update recipient name
+            document.getElementById('recipientName').textContent = data.accountName.toUpperCase();
+            
+            // Update amounts
+            document.getElementById('detailsAmount').textContent = amount;
+            document.getElementById('summaryAmount').textContent = amount;
+            document.getElementById('totalAmount').textContent = amount;
+            
+            // Update recipient details
+            document.getElementById('recipientDetails').innerHTML = 
+                `${data.accountName.toUpperCase()}<br>${data.bankName} | ${data.accountNumber}`;
+            
+            // Update transaction number
+            document.getElementById('transactionNo').textContent = `${data.referenceNumber}📋`;
+            
+            // Update payment method (simulate wallet split)
+            const walletAmount = Math.floor(parseFloat(data.amount) * 0.8);
+            const wealthAmount = parseFloat(data.amount) - walletAmount;
+            document.getElementById('paymentMethod').innerHTML = 
+                `Wallet -₦${walletAmount.toFixed(2)} ><br>OWealth -₦${wealthAmount.toFixed(2)} >`;
+            
+            // Update transaction date
+            const transactionDate = new Date(data.transactionDate);
+            const formattedDate = transactionDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }) + ' ' + transactionDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            document.getElementById('transactionDate').textContent = formattedDate;
+            
+            // Update session ID
+            document.getElementById('sessionId').textContent = `${data.referenceNumber}SESSION${Math.random().toString(36).substr(2, 15).toUpperCase()}📋`;
+            
+            // Update timestamps
+            const baseTime = new Date(data.transactionDate);
+            document.getElementById('paymentTime').textContent = formatTimestamp(baseTime);
+            document.getElementById('processingTime').textContent = formatTimestamp(new Date(baseTime.getTime() + 1000));
+            document.getElementById('receivedTime').textContent = formatTimestamp(new Date(baseTime.getTime() + 28000));
+        }
+
+        function formatTimestamp(date) {
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function goBack() {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.querySelector('.loading-text').textContent = 'Loading...';
+            
+            setTimeout(() => {
+                window.location.href = '/receipt';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
