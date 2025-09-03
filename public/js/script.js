@@ -203,7 +203,7 @@ Bal:${formatAmount(balance)}
 Dial *966# for quick airtime/Data purchase`;
     }
     
-    // Format amount input with proper number formatting
+    // Format amount input - allow any amount
     const amountInput = document.getElementById('amount');
     amountInput.addEventListener('input', function(e) {
         let value = e.target.value.replace(/[^\d.]/g, '');
@@ -217,7 +217,7 @@ Dial *966# for quick airtime/Data purchase`;
             value = parts[0] + '.' + parts[1].slice(0, 2);
         }
         
-        // Format with commas
+        // Format with commas for readability
         if (parts[0]) {
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             value = parts.join('.');
